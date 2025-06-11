@@ -1,11 +1,26 @@
+
+import {createClient} from '@supabase/supabase-js'
+import morgan from 'morgan'
+import bodyParser from 'body-parser'
+
 const express = require('express');
 const dotenv = require('dotenv');
-const connectDB = require("./config/db")
 
 const app = express();
-connectDB();
+
+// morgan libb for logs
+app.use(morgan('combined'));
+
+// bodyParser lib for parsing HTTP req so it's easier to handle
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
 
 dotenv.config(); // load .env from here
+
+const supabase = supabaseClient.createClient({
+  apiKey: '<API_KEY>',
+  project: '<PROJECT_ID>',
+});
 
 const authRoutes = require("./routes/auth");
 const indexRoutes = require('./routes/index');
