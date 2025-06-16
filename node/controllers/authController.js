@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const supabase = require("../supabaseClient.js");
 
 // register controller
 const register = (async (req, res) => {

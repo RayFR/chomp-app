@@ -1,4 +1,4 @@
-import {createClient} from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 const API_KEY = process.env.API_KEY
 const PROJECT_ID = process.env.PROJECT_ID

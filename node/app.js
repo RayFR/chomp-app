@@ -1,6 +1,5 @@
-import morgan from 'morgan'
-import bodyParser from 'body-parser'
-
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
 const express = require('express');
 const dotenv = require('dotenv');
 
