@@ -2,20 +2,35 @@ import { useState } from 'react';
 import { Text, TextInput, Button, View} from 'react-native';
 import { useForm, Controller } from 'react-hook-form'; // controller validates form and tracks input
 
-import { supabase } from '../lib/supabase';
+import { supabase } from '../libs/supabase';
 
 const SignupForm = () => {
     const { control, handleSubmit, formState: { errors } } = useForm();
     
-    const [username, setUsername] = useState();
+    const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [loading, setLoading] = useState(false);
 
     const onSubmit = data => {
         console.log(data);
-        setUsername(data.username);
+        setEmail(data.email);
         setPassword(data.password);
     };
+
+    async function signUpWithEmail() {
+        setLoading(true);
+        const {
+            data: { session },
+            error,
+        } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+        })
+
+        if (error) Alert.alert(error.message);
+        if (!session) Alert.alert('Please check your inbox for email verification!');
+        setLoading(false);
+    }
 
     return (
         <View>
@@ -31,7 +46,7 @@ const SignupForm = () => {
                     />
                 )}
             />
-            {errors.username && <Text>Must enter an email.</Text>}
+            {errors.email && <Text>Must enter an email.</Text>}
 
             <Controller 
                 control={control}
@@ -47,9 +62,9 @@ const SignupForm = () => {
             />
             {errors.password && <Text>Must enter a password.</Text>}
 
-            <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+            <Button title="Submit" onPress={signUpWithEmail()} />
             
-            <Text>{username} --- {password}</Text>
+            <Text>{email} --- {password}</Text>
         </View>
     );
 };
