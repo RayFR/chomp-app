@@ -1,17 +1,24 @@
 import { useState } from 'react';
-import { Text, TextInput, Button, View} from 'react-native';
+import { Text, TextInput, Button, View, Alert} from 'react-native';
 import { useForm, Controller } from 'react-hook-form'; // controller validates form and tracks input
 
 import { supabase } from '../libs/supabase';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginForm = () => {
-    const { control, handleSubmit, formState: { errors } } = useForm();
-    
-    const [email, setemail] = useState();
-    const [password, setPassword] = useState();
-    const [loading, setLoading] = useState();
+    const { control, handleSubmit, formState: { errors }, watch } = useForm({ // useForm tracks input values without direct state management
+        defaultValues: {
+            email: '',
+            password: '',
+        }
+    }); 
 
-    async function loginWithEmail() {
+    const watchedEmail = watch(email);
+    const watchedPassword = watch(password);
+    const [loading, setLoading] = useState(false);
+    const navigation = useNavigation();
+
+    async function loginWithEmail({email, password}) {
         setLoading(true);
         const { error } = await supabase.auth.signInWithPassword({
             email: email,
@@ -21,12 +28,6 @@ const LoginForm = () => {
         if (error) Alert.alert(error.message);
         setLoading(false);
     }
-
-    const onSubmit = data => {
-        console.log(data);
-        setemail(data.email);
-        setPassword(data.password);
-    };
 
     return (
         <View>
@@ -39,6 +40,9 @@ const LoginForm = () => {
                         style={{ borderWidth: 1, marginBottom: 10 }}
                         onChangeText={(text) => onChange(text)} // bridges the onChange function
                         value={value}
+                        leftIcon={{ type: 'font-awesome', name: 'envelope' }}                        
+                        placeholder='Email'
+                        autoCapitalize={'none'}
                     />
                 )}
             />
@@ -53,14 +57,23 @@ const LoginForm = () => {
                         style={{ borderWidth: 1, marginBottom: 10 }}
                         onChangeText={(text) => onChange(text)}
                         value={value}
+                        leftIcon={{ type: 'font-awesome', name: 'lock' }}                        
+                        secureTextEntry={ true }
+                        placeholder='Password'
+                        autoCapitalize={'none'}
                     />
                 )}
             />
             {errors.password && <Text>Must enter a password.</Text>}
 
-            <Button title="Submit" onPress={handleSubmit(loginWithEmail)} />
+            <Button title="Submit" disabled={loading} onPress={handleSubmit(loginWithEmail)} />
             
-            <Text>{email} --- {password}</Text>
+            <Text>{watchedEmail} --- {watchedPassword}</Text>
+
+            <Text onPress={() => navigation.navigate('Signup')}>
+                Don't have an account? Sign up!
+            </Text>
+
         </View>
     );
 };
