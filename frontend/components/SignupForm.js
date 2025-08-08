@@ -19,7 +19,6 @@ const SignupForm = () => {
     const watchedEmail = watch('email');
     const watchedPassword = watch('password');    
     const [loading, setLoading] = useState(false);
-    const [errorCheck, setErrorCheck] = useState(false);
     const navigation = useNavigation();
 
     async function signUpWithEmail({ email, password }) {
@@ -55,13 +54,13 @@ const SignupForm = () => {
                 )}
             />
             
-            {formState.isSubmitted && (
+            {isSubmitted && (
                 <ErrorMessage 
                     errors={errors}
                     name="email"
                     render={ ({ message }) => <Text style={{ color: 'red' }}>{message}</Text> }
                 />                
-            )}
+            )}  
 
             <Controller 
                 control={control}
@@ -80,7 +79,7 @@ const SignupForm = () => {
                 )}
             />
             
-            {formState.isSubmitted && (
+            {isSubmitted && (
                 <ErrorMessage 
                     errors={errors}
                     name="password"

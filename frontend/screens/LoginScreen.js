@@ -5,10 +5,6 @@ import LoginForm from "../components/LoginForm";
 import styles from "../styles/screens/LoginStyles";
 
 function LoginScreen() {
-    const [username, setUsername] = ("");
-    const [password, setPassword] = ("");
-
-    
 
     return (
         <View>

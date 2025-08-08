@@ -6,15 +6,17 @@ import { supabase } from '../libs/supabase';
 import { useNavigation } from '@react-navigation/native';
 
 const LoginForm = () => {
-    const { control, handleSubmit, formState: { errors }, watch } = useForm({ // useForm tracks input values without direct state management
-        defaultValues: {
+    const { control, handleSubmit, formState: { errors, isSubmitted }, watch } = useForm({
+        mode: 'onSubmit',
+        defaultValues: { // fixes uncontrolled input
             email: '',
             password: '',
-        }
-    }); 
+        },
+        criteriaMode: "all",
+    });
 
-    const watchedEmail = watch(email);
-    const watchedPassword = watch(password);
+    const watchedEmail = watch('email');
+    const watchedPassword = watch('password');
     const [loading, setLoading] = useState(false);
     const navigation = useNavigation();
 
@@ -46,7 +48,14 @@ const LoginForm = () => {
                     />
                 )}
             />
-            {errors.email && <Text>Must enter an email.</Text>}
+            
+            {isSubmitted && (
+                <ErrorMessage 
+                    errors={errors}
+                    name="email"
+                    render={ ({ message }) => <Text style={{ color: 'red' }}>{message}</Text> }
+                />                
+            )}  
 
             <Controller 
                 control={control}
@@ -64,7 +73,14 @@ const LoginForm = () => {
                     />
                 )}
             />
-            {errors.password && <Text>Must enter a password.</Text>}
+
+            {isSubmitted && (
+                <ErrorMessage 
+                    errors={errors}
+                    name="password"
+                    render={ ({ message }) => <Text style={{ color: 'red' }}>{message}</Text> }
+                />
+            )}
 
             <Button title="Submit" disabled={loading} onPress={handleSubmit(loginWithEmail)} />
             

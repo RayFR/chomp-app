@@ -6,6 +6,7 @@ import {useEffect, useState } from 'react';
 
 import { supabase } from './libs/supabase';
 import { Session } from '@supabase/supabase-js';
+import { AuthProvider, useAuth } from './contexts/AuthProvider';
 
 
 
@@ -25,21 +26,9 @@ import SignupScreen from './screens/SignupScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+function AppNavigator() {
 
-    const [session, setSession] = useState(null); // creates user auth session state - defaults null
-
-    useEffect(() => {
-      supabase.auth.getSession().then(({ data: { session } }) => { // checks if user is logged in
-        setSession(session);
-      });
-
-      supabase.auth.onAuthStateChange((_event, session) => { // updates the session state when user session changes
-        setSession(session);
-      })
-    }, []);
-
-
+    const { session } = useAuth();
 
     return (
       <PaperProvider theme={theme}>
@@ -59,4 +48,12 @@ export default function App() {
         </NavigationContainer>
       </PaperProvider>
     );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppNavigator />
+    </AuthProvider>
+  )
 }
